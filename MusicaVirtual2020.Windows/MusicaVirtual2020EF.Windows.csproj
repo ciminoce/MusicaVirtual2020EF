@@ -1,0 +1,394 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AC6006DB-FA66-4A15-850D-9EECDE50CDB0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>MusicaVirtual2020.Windows</RootNamespace>
+    <AssemblyName>MusicaVirtual2020.Windows</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AxShockwaveFlashObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlbumesAEForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlbumesAEForm.Designer.cs">
+      <DependentUpon>AlbumesAEForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AlbumesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlbumesForm.Designer.cs">
+      <DependentUpon>AlbumesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AlbumesPorInterpretesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlbumesPorInterpretesForm.Designer.cs">
+      <DependentUpon>AlbumesPorInterpretesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AlbumesPorNegocioForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlbumesPorNegocioForm.Designer.cs">
+      <DependentUpon>AlbumesPorNegocioForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EstiloAEForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EstiloAEForm.Designer.cs">
+      <DependentUpon>EstiloAEForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EstilosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EstilosForm.Designer.cs">
+      <DependentUpon>EstilosForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\Helper.cs" />
+    <Compile Include="Helpers\Tipo.cs" />
+    <Compile Include="InterpretesAEForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InterpretesAEForm.Designer.cs">
+      <DependentUpon>InterpretesAEForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InterpretesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InterpretesForm.Designer.cs">
+      <DependentUpon>InterpretesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MenuPrincipalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MenuPrincipalForm.Designer.cs">
+      <DependentUpon>MenuPrincipalForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NegociosAEForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NegociosAEForm.Designer.cs">
+      <DependentUpon>NegociosAEForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NegociosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NegociosForm.Designer.cs">
+      <DependentUpon>NegociosForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ninject\Bindings.cs" />
+    <Compile Include="Ninject\DI.cs" />
+    <Compile Include="PaisesAEForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PaisesAEForm.Designer.cs">
+      <DependentUpon>PaisesAEForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PaisesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PaisesForm.Designer.cs">
+      <DependentUpon>PaisesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PaisFiltrarFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PaisFiltrarFrm.Designer.cs">
+      <DependentUpon>PaisFiltrarFrm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReportesForm.Designer.cs">
+      <DependentUpon>ReportesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SoportesAEForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoportesAEForm.Designer.cs">
+      <DependentUpon>SoportesAEForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SoportesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoportesForm.Designer.cs">
+      <DependentUpon>SoportesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TemasAEForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TemasAEForm.Designer.cs">
+      <DependentUpon>TemasAEForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AlbumesAEForm.resx">
+      <DependentUpon>AlbumesAEForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AlbumesForm.resx">
+      <DependentUpon>AlbumesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AlbumesPorInterpretesForm.resx">
+      <DependentUpon>AlbumesPorInterpretesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AlbumesPorNegocioForm.resx">
+      <DependentUpon>AlbumesPorNegocioForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EstiloAEForm.resx">
+      <DependentUpon>EstiloAEForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EstilosForm.resx">
+      <DependentUpon>EstilosForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InterpretesAEForm.resx">
+      <DependentUpon>InterpretesAEForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InterpretesForm.resx">
+      <DependentUpon>InterpretesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MenuPrincipalForm.resx">
+      <DependentUpon>MenuPrincipalForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NegociosAEForm.resx">
+      <DependentUpon>NegociosAEForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NegociosForm.resx">
+      <DependentUpon>NegociosForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PaisesAEForm.resx">
+      <DependentUpon>PaisesAEForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PaisesForm.resx">
+      <DependentUpon>PaisesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PaisFiltrarFrm.resx">
+      <DependentUpon>PaisFiltrarFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="ReportesForm.resx">
+      <DependentUpon>ReportesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoportesAEForm.resx">
+      <DependentUpon>SoportesAEForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoportesForm.resx">
+      <DependentUpon>SoportesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TemasAEForm.resx">
+      <DependentUpon>TemasAEForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MusicaVirtual2020.Datos\MusicaVirtual2020EF.Datos.csproj">
+      <Project>{cb39f3c9-1b05-448d-982b-b522b935ade9}</Project>
+      <Name>MusicaVirtual2020EF.Datos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MusicaVirtual2020.Entidades\MusicaVirtual2020EF.Entidades.csproj">
+      <Project>{5219dbc8-6551-4252-a2fc-f8f2fe275d59}</Project>
+      <Name>MusicaVirtual2020EF.Entidades</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MusicaVirtual2020.Reportes\MusicaVirtual2020EF.Reportes.csproj">
+      <Project>{12d6d30c-ed0c-48b4-b0c6-f5a410dca948}</Project>
+      <Name>MusicaVirtual2020EF.Reportes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MusicaVirtual2020.Servicios\MusicaVirtual2020EF.Servicios.csproj">
+      <Project>{3cd79318-2c3f-44e7-a6df-c82891cf6c18}</Project>
+      <Name>MusicaVirtual2020EF.Servicios</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Aceptar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AgregarAE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Buscar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BuscarAE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cancelar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete_file_28px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete_sign_16px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit_16px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit_file_28px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\End.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Guardar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_09_61473 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_09_61473.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_cdaudio_unmount_18274 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_cdaudio_unmount_18274.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_folder_music_7487 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_folder_music_7487.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_globe green_10443 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_globe green_10443.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_music_54893 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_music_54893.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_stock_people_21481 %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconfinder_stock_people_21481.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\new_by_copy_28px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Nuevo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Previous.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\show_property_32px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\show_property_40px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Start.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Update.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>
