@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MusicaVirtual2020.Entidades;
 using MusicaVirtual2020.Entidades.Entities;
-using MusicaVirtual2020.Reportes;
-using MusicaVirtual2020.Servicios;
+using MusicaVirtual2020.Servicios.Servicios;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 
 namespace MusicaVirtual2020.Windows
 {
     public partial class NegociosForm : Form
     {
-        private NegociosForm()
+        private NegociosForm(IServicioNegocio servicio)
         {
             InitializeComponent();
+            this.servicio = servicio;
         }
         private static NegociosForm instancia = null;
 
-        public static NegociosForm GetInstancia()
+        public static NegociosForm GetInstancia(IServicioNegocio servicio)
         {
             if (instancia == null)
             {
-                instancia = new NegociosForm();
+                instancia = new NegociosForm(servicio);
                 instancia.FormClosed += form_Close;
             }
 
@@ -34,12 +34,11 @@ namespace MusicaVirtual2020.Windows
 
 
         private List<Negocio> lista;
-        private ServicioNegocio servicio;
+        private IServicioNegocio servicio;
         private void NegociosForm_Load(object sender, EventArgs e)
         {
             try
             {
-                servicio = new ServicioNegocio();
                 lista = servicio.GetNegocios();
                 MostrarDatosEnGrilla();
             }
@@ -100,7 +99,7 @@ namespace MusicaVirtual2020.Windows
 
                     if (!servicio.Existe(negocio))
                     {
-                        servicio.Agregar(negocio);
+                        servicio.Guardar(negocio);
                         DataGridViewRow r = ConstruirFila();
                         SetearFila(r, negocio);
                         AgregarFila(r);
@@ -184,7 +183,7 @@ namespace MusicaVirtual2020.Windows
 
                         if (!servicio.Existe(negocio))
                         {
-                            servicio.Agregar(negocio);
+                            servicio.Guardar(negocio);
                             SetearFila(r, negocio);
                             MessageBox.Show("Registro agregado", "Mensaje",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -284,7 +283,6 @@ namespace MusicaVirtual2020.Windows
         {
             try
             {
-                servicio = new ServicioNegocio();
                 lista = servicio.GetNegocios();
                 MostrarDatosEnGrilla();
             }

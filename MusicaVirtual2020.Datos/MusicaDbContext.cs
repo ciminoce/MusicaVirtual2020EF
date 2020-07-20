@@ -22,5 +22,6 @@ namespace MusicaVirtual2020.Datos
         public DbSet<Pais> Paises { get; set; }
         public DbSet<Soporte> Soportes { get; set; }
         public DbSet<Interprete> Interpretes { get; set; }
+        public DbSet<Negocio> Negocios { get; set; }
     }
 }

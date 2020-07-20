@@ -38,7 +38,7 @@ namespace MusicaVirtual2020.Windows.Helpers
 
         public static void CargarDatosComboNegocios(ref ComboBox combo)
         {
-            ServicioNegocio servicio = new ServicioNegocio();
+            IServicioNegocio servicio = DI.Create<IServicioNegocio>();
             var lista = servicio.GetNegocios();
             Negocio defaultNegocio = new Negocio() { NegocioId = 0, Nombre = "<Seleccione Negocio>" };
             lista.Insert(0, defaultNegocio);

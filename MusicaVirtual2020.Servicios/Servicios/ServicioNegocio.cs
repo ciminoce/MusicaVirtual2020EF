@@ -1,102 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MusicaVirtual2020.Datos;
-using MusicaVirtual2020.Datos.Repositorios;
-using MusicaVirtual2020.Entidades;
+using MusicaVirtual2020.Datos.Repositorios.Facades;
 using MusicaVirtual2020.Entidades.Entities;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 
-namespace MusicaVirtual2020.Servicios
+namespace MusicaVirtual2020.Servicios.Servicios
 {
-    public class ServicioNegocio
+    public class ServicioNegocio : IServicioNegocio
     {
-        private ConexionBd cn;
-        private RepositorioNegocios repositorio;
-        private RepositorioPaises repositorioPaises;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositorioNegocios _repositorio;
 
-        public ServicioNegocio()
+        public ServicioNegocio(IUnitOfWork unitOfWork, IRepositorioNegocios repositorio)
         {
-
+            _unitOfWork = unitOfWork;
+            _repositorio = repositorio;
         }
 
         public void Borrar(Negocio negocio)
         {
-            try
-            {
-                cn = new ConexionBd();
-                repositorio = new RepositorioNegocios(cn.AbrirConexion());
-                repositorio.Borrar(negocio);
-                cn.CerrarConexion();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            _repositorio.Borrar(negocio);
+            _unitOfWork.Save();
         }
         public bool Existe(Negocio negocio)
         {
-            try
-            {
-                cn = new ConexionBd();
-                repositorio = new RepositorioNegocios(cn.AbrirConexion());
-                var existe = repositorio.Existe(negocio);
-                cn.CerrarConexion();
-                return existe;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            return _repositorio.Existe(negocio);
         }
-        public void Agregar(Negocio negocio)
+        public void Guardar(Negocio negocio)
         {
-            try
-            {
-                cn = new ConexionBd();
-                repositorio = new RepositorioNegocios(cn.AbrirConexion());
-                repositorio.Agregar(negocio);
-                cn.CerrarConexion();
-
-            }
-            catch (Exception e)
-            {
-
-                throw new Exception(e.Message);
-            }
+            _repositorio.Guardar(negocio);
+            _unitOfWork.Save();
+            
         }
         public List<Negocio> GetNegocios(Pais pais = null)
         {
-            try
-            {
-                cn = new ConexionBd();
-                //repositorioPaises = new RepositorioPaises(cn.AbrirConexion());
-                repositorio = new RepositorioNegocios(cn.AbrirConexion(), repositorioPaises);
-                var lista = repositorio.GetNegocios(pais);
-                cn.CerrarConexion();
-                return lista;
-            }
-            catch (Exception e)
-            {
-
-                throw new Exception(e.Message);
-            }
+            return _repositorio.GetNegocios(pais);
         }
 
         public bool EstaRelaciona(Negocio negocio)
         {
-            try
-            {
-                cn = new ConexionBd();
-                repositorio = new RepositorioNegocios(cn.AbrirConexion());
-                var relacionado = repositorio.EstaRelacionado(negocio);
-                cn.CerrarConexion();
-                return relacionado;
-            }
-            catch (Exception e)
-            {
-
-                throw new Exception(e.Message);
-            }
+            return _repositorio.EstaRelacionado(negocio);
         }
 
     }

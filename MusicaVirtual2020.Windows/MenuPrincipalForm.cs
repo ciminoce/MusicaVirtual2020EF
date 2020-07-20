@@ -92,7 +92,7 @@ namespace MusicaVirtual2020.Windows
 
         private void ManejarNegocios()
         {
-            NegociosForm frm = NegociosForm.GetInstancia();
+            NegociosForm frm = NegociosForm.GetInstancia(DI.Create<IServicioNegocio>());
 
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;

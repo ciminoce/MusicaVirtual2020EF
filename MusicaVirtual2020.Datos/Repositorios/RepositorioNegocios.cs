@@ -1,39 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using MusicaVirtual2020.Datos.Repositorios;
-using MusicaVirtual2020.Entidades;
+using System.Data.Entity;
+using System.Linq;
+using MusicaVirtual2020.Datos.Repositorios.Facades;
 using MusicaVirtual2020.Entidades.Entities;
 
-namespace MusicaVirtual2020.Datos
+namespace MusicaVirtual2020.Datos.Repositorios
 {
-    public class RepositorioNegocios
+    public class RepositorioNegocios : IRepositorioNegocios
     {
-        private readonly SqlConnection _cn;
-        private readonly RepositorioPaises _repositorioPaises;
+        private readonly MusicaDbContext _dbContext;
 
-        public RepositorioNegocios(SqlConnection cn, RepositorioPaises repositorioPaises)
+        public RepositorioNegocios(MusicaDbContext dbContext)
         {
-            this._cn = cn;
-            this._repositorioPaises = repositorioPaises;
+            _dbContext = dbContext;
         }
 
-        public RepositorioNegocios(SqlConnection cn)
-        {
-            _cn = cn;
-        }
         public bool EstaRelacionado(Negocio negocio)
         {
             try
             {
-                var cadenaComando = "SELECT COUNT(*) FROM Albumes WHERE NegocioId=@id";
-                var comando = new SqlCommand(cadenaComando, _cn);
-                comando.Parameters.AddWithValue("@id", negocio.NegocioId);
-                int cantidadRegistros = (int)comando.ExecuteScalar();
-                if (cantidadRegistros > 0)
-                {
-                    return true;
-                }
                 return false;
 
             }
@@ -48,10 +34,7 @@ namespace MusicaVirtual2020.Datos
         {
             try
             {
-                string cadenaComando = "DELETE FROM Negocios WHERE NegocioId=@id";
-                SqlCommand comando = new SqlCommand(cadenaComando, _cn);
-                comando.Parameters.AddWithValue("@id", negocio.NegocioId);
-                comando.ExecuteNonQuery();
+                _dbContext.Negocios.Remove(negocio);
             }
             catch (Exception ex)
             {
@@ -62,28 +45,14 @@ namespace MusicaVirtual2020.Datos
         {
             try
             {
-                SqlCommand comando = null;
-                SqlDataReader reader = null;
-
                 if (negocio.NegocioId == 0)
                 {
-                    var cadenaComando = "SELECT NegocioId, Nombre, PaisId FROM Negocios WHERE Nombre=@nombre AND PaisId=@paisid";
-                    comando = new SqlCommand(cadenaComando, _cn);
-                    comando.Parameters.AddWithValue("@nombre", negocio.Nombre);
-                    comando.Parameters.AddWithValue("@paisid", negocio.Pais.PaisId);
+                    return _dbContext.Negocios.Any(n => n.Nombre == negocio.Nombre && n.Pais.Nombre==negocio.Pais.Nombre) ;
 
                 }
-                else
-                {
-                    var cadenaComando = "SELECT NegocioId, Nombre, PaisId FROM Negocios WHERE Nombre=@nombre AND PaisId=@paisid AND NegocioId<>@id";
-                    comando = new SqlCommand(cadenaComando, _cn);
-                    comando.Parameters.AddWithValue("@nombre", negocio.Nombre);
-                    comando.Parameters.AddWithValue("@paisid", negocio.Pais.PaisId);
-                    comando.Parameters.AddWithValue("@id", negocio.NegocioId);
-                }
 
-                reader = comando.ExecuteReader();
-                return reader.HasRows;
+                return _dbContext.Negocios.Any(n => n.Nombre == negocio.Nombre && n.Pais.Nombre == negocio.Pais.Nombre
+                                                                               && n.NegocioId != negocio.NegocioId);
 
             }
             catch (Exception e)
@@ -92,15 +61,19 @@ namespace MusicaVirtual2020.Datos
                 throw new Exception(e.Message);
             }
         }
-        public void Agregar(Negocio negocio)
+        public void Guardar(Negocio negocio)
         {
             try
             {
-                string cadenaComando = "INSERT INTO Negocios VALUES (@nombre, @paisid)";
-                SqlCommand comando = new SqlCommand(cadenaComando, _cn);
-                comando.Parameters.AddWithValue("@nombre", negocio.Nombre);
-                comando.Parameters.AddWithValue("@paisid", negocio.Pais.PaisId);
-                comando.ExecuteNonQuery();
+                if (negocio.NegocioId==0)
+                {
+                    _dbContext.Negocios.Add(negocio);
+                }
+                else
+                {
+                    _dbContext.Negocios.Attach(negocio);
+                    _dbContext.Entry(negocio).State = EntityState.Modified;
+                }
             }
             catch (Exception e)
             {
@@ -112,24 +85,13 @@ namespace MusicaVirtual2020.Datos
         {
             try
             {
-                List<Negocio> lista = new List<Negocio>();
-                var cadenaComando = "SELECT NegocioId, Nombre, PaisId FROM Negocios ";
-                string whereCondicion = pais != null ? " WHERE PaisId=@paisid " : string.Empty;
-                var orderBy = " ORDER BY Nombre";
+                IQueryable<Negocio> query = _dbContext.Negocios.Include(n=>n.Pais);
+                if (pais!=null)
+                {
+                    query = query.Where(n => n.Pais.Nombre == pais.Nombre);
+                }
 
-                var comando = new SqlCommand($"{cadenaComando}{whereCondicion}{orderBy}", _cn);
-                if (pais != null)
-                {
-                    comando.Parameters.AddWithValue("@paisid", pais.PaisId);
-                }
-                var reader = comando.ExecuteReader();
-                while (reader.Read())
-                {
-                    var negocio = ConstruirNegocio(reader);
-                    lista.Add(negocio);
-                }
-                reader.Close();
-                return lista;
+                return query.ToList();
             }
             catch (Exception e)
             {
@@ -138,15 +100,6 @@ namespace MusicaVirtual2020.Datos
             }
         }
 
-        private Negocio ConstruirNegocio(SqlDataReader reader)
-        {
-            return new Negocio
-            {
-                NegocioId = reader.GetInt32(0),
-                Nombre = reader.GetString(1),
-                Pais = _repositorioPaises.GetPaisPorId(reader.GetInt32(2))
-            };
-        }
 
     }
 }
