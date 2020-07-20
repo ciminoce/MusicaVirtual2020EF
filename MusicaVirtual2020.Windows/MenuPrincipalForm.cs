@@ -58,7 +58,7 @@ namespace MusicaVirtual2020.Windows
 
         private void ManejarInterpretes()
         {
-            InterpretesForm frm = InterpretesForm.GetInstancia();
+            InterpretesForm frm = InterpretesForm.GetInstancia(DI.Create<IServicioInterprete>());
 
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
@@ -75,7 +75,7 @@ namespace MusicaVirtual2020.Windows
 
         private void ManejarSoportes()
         {
-            SoportesForm frm = SoportesForm.GetInstancia();
+            SoportesForm frm = SoportesForm.GetInstancia(DI.Create<IServicioSoporte>());
 
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;

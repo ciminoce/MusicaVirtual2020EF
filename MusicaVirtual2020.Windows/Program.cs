@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MusicaVirtual2020.Entidades.Mapas;
 using MusicaVirtual2020.Windows.Ninject;
 
 namespace MusicaVirtual2020.Windows

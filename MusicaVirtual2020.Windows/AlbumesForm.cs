@@ -98,8 +98,8 @@ namespace MusicaVirtual2020.Windows
                     Album album = frm.GetAlbum();
                     servicio.Agregar(album);
                     DataGridViewRow r = ConstruirFila();
-                    AlbumListDto albumListDto = Mapeador.ConvertirDesdeAlbum(album);
-                    SetearFila(r,albumListDto);
+                    //AlbumListDto albumListDto = Mapeador.ConvertirDesdeAlbum(album);
+                    //SetearFila(r,albumListDto);
                     AgregarFila(r);
                     Helper.mensajeBox("Registro agregado con éxito", Tipo.Success);
                 }

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MusicaVirtual2020.Entidades.DTOs.Album;
-using MusicaVirtual2020.Entidades.DTOs.Tema;
 using MusicaVirtual2020.Entidades.Entities;
-using MusicaVirtual2020.Entidades.Mapas;
 using MusicaVirtual2020.Windows.Helpers;
 
 namespace MusicaVirtual2020.Windows

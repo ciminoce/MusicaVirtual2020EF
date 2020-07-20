@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using MusicaVirtual2020.Entidades.DTOs.Interprete;
 using MusicaVirtual2020.Entidades.Entities;
+using MusicaVirtual2020.Entidades.Mapas;
 using MusicaVirtual2020.Reportes;
-using MusicaVirtual2020.Servicios;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 
 namespace MusicaVirtual2020.Windows
 {
@@ -11,11 +13,11 @@ namespace MusicaVirtual2020.Windows
     {
         private static InterpretesForm instancia = null;
 
-        public static InterpretesForm GetInstancia()
+        public static InterpretesForm GetInstancia(IServicioInterprete servicio)
         {
             if (instancia == null)
             {
-                instancia = new InterpretesForm();
+                instancia = new InterpretesForm(servicio);
                 instancia.FormClosed += form_Close;
             }
 
@@ -27,18 +29,23 @@ namespace MusicaVirtual2020.Windows
             instancia = null;
         }
 
-        private InterpretesForm()
+        private InterpretesForm(IServicioInterprete servicio)
         {
             InitializeComponent();
+            this.servicio = servicio;
         }
 
         private List<Interprete> lista;
-        private ServicioInterprete servicio;
+        private readonly IServicioInterprete servicio;
         private void InterpretesForm_Load(object sender, EventArgs e)
+        {
+            LoadRegistros();
+        }
+
+        private void LoadRegistros()
         {
             try
             {
-                servicio = new ServicioInterprete();
                 lista = servicio.GetInterpretes();
                 MostrarDatosEnGrilla();
             }
@@ -49,6 +56,7 @@ namespace MusicaVirtual2020.Windows
                     MessageBoxIcon.Error);
             }
         }
+
         private void MostrarDatosEnGrilla()
         {
             DatosDataGridView.Rows.Clear();
@@ -99,9 +107,9 @@ namespace MusicaVirtual2020.Windows
 
                     if (!servicio.Existe(interprete))
                     {
-                        servicio.Agregar(interprete);
+                        servicio.Guardar(interprete);
                         DataGridViewRow r = ConstruirFila();
-                        SetearFila(r, interprete);
+                        var interpreteDto = Mapeador.CrearMapper().Map<Interprete, InterpreteListDto>(interprete);
                         AgregarFila(r);
                         MessageBox.Show("Registro agregado", "Mensaje",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -183,7 +191,7 @@ namespace MusicaVirtual2020.Windows
 
                         if (!servicio.Existe(interprete))
                         {
-                            servicio.Agregar(interprete);
+                            servicio.Guardar(interprete);
                             SetearFila(r, interprete);
                             MessageBox.Show("Registro agregado", "Mensaje",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -191,10 +199,11 @@ namespace MusicaVirtual2020.Windows
                         }
                         else
                         {
-                            SetearFila(r, interpreteAux);
+                            
 
                             MessageBox.Show("Registro Duplicado \nAlta Denegada", "Error",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            LoadRegistros();//Cargo toda la grilla;
 
                         }
 
@@ -283,7 +292,6 @@ namespace MusicaVirtual2020.Windows
         {
             try
             {
-                servicio = new ServicioInterprete();
                 lista = servicio.GetInterpretes();
                 MostrarDatosEnGrilla();
             }

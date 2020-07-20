@@ -1,6 +1,8 @@
 ﻿using System.Windows.Forms;
+using MusicaVirtual2020.Entidades.DTOs.Interprete;
 using MusicaVirtual2020.Entidades.Entities;
 using MusicaVirtual2020.Servicios;
+using MusicaVirtual2020.Servicios.Servicios;
 using MusicaVirtual2020.Servicios.Servicios.Facades;
 using MusicaVirtual2020.Windows.Ninject;
 
@@ -23,9 +25,9 @@ namespace MusicaVirtual2020.Windows.Helpers
 
         public static void CargarDatosComboInterpretes(ref ComboBox combo)
         {
-            ServicioInterprete servicio = new ServicioInterprete();
+            IServicioInterprete servicio = DI.Create<IServicioInterprete>();
             var lista = servicio.GetInterpretes();
-            Interprete defaultInterprete = new Interprete() { InterpreteId = 0, Nombre = "<Seleccione Interprete>" };
+            Interprete defaultInterprete = new Interprete { InterpreteId = 0, Nombre = "<Seleccione Interprete>" };
             lista.Insert(0, defaultInterprete);
             combo.DataSource = lista;
             combo.DisplayMember = "Nombre";
@@ -49,7 +51,7 @@ namespace MusicaVirtual2020.Windows.Helpers
 
         public static void CargarDatosComboSoportes(ref ComboBox combo)
         {
-            ServicioSoporte servicio = new ServicioSoporte();
+            IServicioSoporte servicio = DI.Create<IServicioSoporte>();
             var lista = servicio.GetLista();
             Soporte defaultSoporte = new Soporte() { SoporteId = 0, Descripcion = "<Seleccione Soporte>" };
             lista.Insert(0, defaultSoporte);

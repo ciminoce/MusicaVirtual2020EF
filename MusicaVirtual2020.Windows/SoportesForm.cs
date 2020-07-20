@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MusicaVirtual2020.Entidades;
 using MusicaVirtual2020.Entidades.Entities;
-using MusicaVirtual2020.Reportes;
-using MusicaVirtual2020.Servicios;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 
 namespace MusicaVirtual2020.Windows
 {
     public partial class SoportesForm : Form
     {
-        private SoportesForm()
+        private SoportesForm(IServicioSoporte servicio)
         {
             InitializeComponent();
+            this.servicio = servicio;
         }
         private static SoportesForm instancia = null;
 
-        public static SoportesForm GetInstancia()
+        public static SoportesForm GetInstancia(IServicioSoporte servicio)
         {
             if (instancia == null)
             {
-                instancia = new SoportesForm();
+                instancia = new SoportesForm(servicio);
                 instancia.FormClosed += form_Close;
             }
 
@@ -37,7 +36,7 @@ namespace MusicaVirtual2020.Windows
             Close();
         }
 
-        private ServicioSoporte servicio;
+        private readonly IServicioSoporte servicio;
         private List<Soporte> lista;
 
         private void SoportesForm_Load(object sender, EventArgs e)
@@ -45,7 +44,6 @@ namespace MusicaVirtual2020.Windows
             this.Dock = DockStyle.Fill;
             try
             {
-                servicio = new ServicioSoporte();
                 lista = servicio.GetLista();
                 MostrarDatosEnGrilla();
             }
@@ -99,7 +97,7 @@ namespace MusicaVirtual2020.Windows
                     Soporte soporte = frm.GetSoporte();
                     if (!servicio.Existe(soporte))
                     {
-                        servicio.Agregar(soporte);
+                        servicio.Guardar(soporte);
                         var r = ConstruirFila();
                         SetearFila(r, soporte);
                         AgregarFila(r);
@@ -186,7 +184,7 @@ namespace MusicaVirtual2020.Windows
                         p = frm.GetSoporte();
                         if (!servicio.Existe(p))
                         {
-                            servicio.Editar(p);
+                            servicio.Guardar(p);
                             SetearFila(r, p);
                             MessageBox.Show("Registro editado", "Mensaje", MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);

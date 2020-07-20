@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using MusicaVirtual2020.Datos;
+using MusicaVirtual2020.Datos.Repositorios;
 using MusicaVirtual2020.Entidades.DTOs.Album;
 using MusicaVirtual2020.Entidades.DTOs.Interprete;
 using MusicaVirtual2020.Entidades.DTOs.Negocio;

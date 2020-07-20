@@ -1,35 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SqlClient;
-using MusicaVirtual2020.Entidades;
+using System.Linq;
+using MusicaVirtual2020.Datos.Repositorios.Facades;
 using MusicaVirtual2020.Entidades.Entities;
 
-namespace MusicaVirtual2020.Datos
+namespace MusicaVirtual2020.Datos.Repositorios
 {
-    public class RepositorioSoportes
+    public class RepositorioSoportes : IRepositorioSoportes
     {
-        private readonly SqlConnection _cn;
+        private readonly MusicaDbContext _dbContext;
 
-        public RepositorioSoportes(SqlConnection cn)
+        public RepositorioSoportes(MusicaDbContext dbContext)
         {
-            this._cn = cn;
+            _dbContext = dbContext;
         }
+
 
         public List<Soporte> GetLista()
         {
             try
             {
-                List<Soporte> lista = new List<Soporte>();
-                string cadenaComando = "SELECT SoporteId, Descripcion FROM Soportes";
-                SqlCommand comando = new SqlCommand(cadenaComando, _cn);
-                SqlDataReader reader = comando.ExecuteReader();
-                while (reader.Read())
-                {
-                    Soporte soporte = ConstruirSoporte(reader);
-                    lista.Add(soporte);
-                }
-                reader.Close();
-                return lista;
+                return _dbContext.Soportes.ToList();
             }
             catch (Exception e)
             {
@@ -48,18 +41,27 @@ namespace MusicaVirtual2020.Datos
 
 
 
-        public void Agregar(Soporte soporte)
+        public void Guardar(Soporte soporte)
         {
             try
             {
-                var cadenaComando = "INSERT INTO Soportes VALUES (@nombre)";
-                var comando = new SqlCommand(cadenaComando, _cn);
-                comando.Parameters.AddWithValue("@nombre", soporte.Descripcion);
-                comando.ExecuteNonQuery();
-                cadenaComando = "SELECT @@IDENTITY";
-                comando = new SqlCommand(cadenaComando, _cn);
-                int id = (int)(decimal)comando.ExecuteScalar();
-                soporte.SoporteId = id;
+                if (soporte.SoporteId == 0)
+                {
+                    _dbContext.Soportes.Add(soporte);
+                }
+                else
+                {
+                    var soporteInDb = _dbContext.Soportes.SingleOrDefault(p => p.SoporteId == soporte.SoporteId);
+                    if (soporteInDb != null)
+                    {
+                        soporteInDb.Descripcion = soporte.Descripcion;
+                        _dbContext.Entry(soporteInDb).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        throw new Exception("Soporte inexistente");
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -72,26 +74,14 @@ namespace MusicaVirtual2020.Datos
         {
             try
             {
-                SqlCommand comando = null;
-                SqlDataReader reader = null;
 
                 if (soporte.SoporteId == 0)
                 {
-                    var cadenaComando = "SELECT SoporteId, Descripcion FROM Soportes WHERE Descripcion=@nombre";
-                    comando = new SqlCommand(cadenaComando, _cn);
-                    comando.Parameters.AddWithValue("@nombre", soporte.Descripcion);
+                    return _dbContext.Soportes.Any(p => p.Descripcion == soporte.Descripcion);
 
                 }
-                else
-                {
-                    var cadenaComando = "SELECT SoporteId, Descripcion FROM Soportes WHERE Descripcion=@nombre AND SoporteId<>@id";
-                    comando = new SqlCommand(cadenaComando, _cn);
-                    comando.Parameters.AddWithValue("@nombre", soporte.Descripcion);
-                    comando.Parameters.AddWithValue("@id", soporte.SoporteId);
-                }
 
-                reader = comando.ExecuteReader();
-                return reader.HasRows;
+                return _dbContext.Soportes.Any(p => p.Descripcion == soporte.Descripcion && p.SoporteId != soporte.SoporteId);
             }
             catch (Exception e)
             {
@@ -102,35 +92,22 @@ namespace MusicaVirtual2020.Datos
 
         public bool EstaRelacionado(Soporte soporte)
         {
-            try
-            {
-                var cadenaComando = "SELECT COUNT(*) FROM Albumes WHERE SoporteId=@id";
-                var comando = new SqlCommand(cadenaComando, _cn);
-                comando.Parameters.AddWithValue("@id", soporte.SoporteId);
-                int cantidadRegistros = (int)comando.ExecuteScalar();
-                if (cantidadRegistros > 0)
-                {
-                    return true;
-                }
-
-                return false;
-
-            }
-            catch (Exception e)
-            {
-
-                throw new Exception(e.Message);
-            }
+            return false;
         }
 
         public void Borrar(Soporte soporte)
         {
             try
             {
-                var cadenaComando = "DELETE FROM Soportes WHERE SoporteId=@id";
-                var comando = new SqlCommand(cadenaComando, _cn);
-                comando.Parameters.AddWithValue("@id", soporte.SoporteId);
-                comando.ExecuteNonQuery();
+                var soporteInDb = _dbContext.Soportes.SingleOrDefault(p => p.SoporteId == soporte.SoporteId);
+                if (soporteInDb != null)
+                {
+                    _dbContext.Entry(soporteInDb).State = EntityState.Deleted;
+                }
+                else
+                {
+                    throw new Exception("Soporte inexistente");
+                }
             }
             catch (Exception e)
             {
@@ -138,39 +115,12 @@ namespace MusicaVirtual2020.Datos
             }
         }
 
-        public void Editar(Soporte soporte)
-        {
-            try
-            {
-                var cadenaComando = "UPDATE Soportes SET Descripcion=@nombre WHERE SoporteId=@id";
-                var comando = new SqlCommand(cadenaComando, _cn);
-                comando.Parameters.AddWithValue("@nombre", soporte.Descripcion);
-                comando.Parameters.AddWithValue("@id", soporte.SoporteId);
-                comando.ExecuteNonQuery();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
 
         public Soporte GetSoportePorId(int id)
         {
             try
             {
-                Soporte soporte = null;
-                string cadenaComando = "SELECT SoporteId, Descripcion FROM Soportes WHERE SoporteId=@id";
-                SqlCommand comando = new SqlCommand(cadenaComando, _cn);
-                comando.Parameters.AddWithValue("@id", id);
-                SqlDataReader reader = comando.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    soporte = ConstruirSoporte(reader);
-                }
-                reader.Close();
-                return soporte;
+                return _dbContext.Soportes.SingleOrDefault(s=>s.SoporteId==id);
             }
             catch (Exception e)
             {

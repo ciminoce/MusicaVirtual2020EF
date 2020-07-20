@@ -1,102 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MusicaVirtual2020.Datos;
 using MusicaVirtual2020.Datos.Repositorios;
-using MusicaVirtual2020.Entidades;
+using MusicaVirtual2020.Entidades.DTOs.Interprete;
 using MusicaVirtual2020.Entidades.Entities;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 
-namespace MusicaVirtual2020.Servicios
+namespace MusicaVirtual2020.Servicios.Servicios
 {
-    public class ServicioInterprete
+    public class ServicioInterprete : IServicioInterprete
     {
-        private ConexionBd cn;
-        private RepositorioInterpretes repositorio;
-        private RepositorioPaises repositorioPaises;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositorioInterpretes _repositorio;
 
-        public ServicioInterprete()
+        public ServicioInterprete(IUnitOfWork unitOfWork, IRepositorioInterpretes repositorio)
         {
-            
+            _unitOfWork = unitOfWork;
+            _repositorio = repositorio;
         }
 
         public void Borrar(Interprete interprete)
         {
-            try
-            {
-                cn=new ConexionBd();
-                repositorio=new RepositorioInterpretes(cn.AbrirConexion());
-                repositorio.Borrar(interprete);
-                cn.CerrarConexion();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            _repositorio.Borrar(interprete);
+            _unitOfWork.Save();
         }
         public bool Existe(Interprete interprete)
         {
-            try
-            {
-                cn=new ConexionBd();
-                repositorio=new RepositorioInterpretes(cn.AbrirConexion());
-                var existe = repositorio.Existe(interprete);
-                cn.CerrarConexion();
-                return existe;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            return _repositorio.Existe(interprete);
         }
-        public void Agregar(Interprete interprete)
+        public void Guardar(Interprete interprete)
         {
-            try
-            {
-                cn=new ConexionBd();
-                repositorio=new RepositorioInterpretes(cn.AbrirConexion());
-                repositorio.Agregar(interprete);
-                cn.CerrarConexion();
-
-            }
-            catch (Exception e)
-            {
-                
-                throw new Exception(e.Message);
-            }
+            _repositorio.Guardar(interprete);
+            _unitOfWork.Save();
         }
         public List<Interprete> GetInterpretes(Pais pais=null)
         {
-            try
-            {
-                cn=new ConexionBd();
-                //repositorioPaises=new RepositorioPaises(cn.AbrirConexion());
-                repositorio=new RepositorioInterpretes(cn.AbrirConexion(), repositorioPaises);
-                var lista = repositorio.GetInterpretes(pais);
-                cn.CerrarConexion();
-                return lista;
-            }
-            catch (Exception e)
-            {
-                
-                throw new Exception(e.Message);
-            }
+            return _repositorio.GetInterpretes(pais);
         }
 
         public bool EstaRelaciona(Interprete interprete)
         {
-            try
-            {
-                cn=new ConexionBd();
-                repositorio=new RepositorioInterpretes(cn.AbrirConexion());
-                var relacionado = repositorio.EstaRelacionado(interprete);
-                cn.CerrarConexion();
-                return relacionado;
-            }
-            catch (Exception e)
-            {
-                
-                throw new Exception(e.Message);
-            }
+            return _repositorio.EstaRelacionado(interprete);
         }
     }
 }

@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.10.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -53,11 +56,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConexionBd.cs" />
+    <Compile Include="EntityTypeConfigurations\InterpreteEntityTypeConfigurations.cs" />
     <Compile Include="EntityTypeConfigurations\PaisEntityTypeConfigurations.cs" />
+    <Compile Include="EntityTypeConfigurations\SoporteEntityTypeConfigurations.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="MusicaDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorios\Facades\IRepositorioPaises.cs" />
+    <Compile Include="Repositorios\Facades\IRepositorioSoportes.cs" />
+    <Compile Include="Repositorios\Facades\IRepositorioInterpretes.cs" />
     <Compile Include="Repositorios\RepositorioAlbumes.cs" />
     <Compile Include="Repositorios\RepositorioEstilos.cs" />
     <Compile Include="Repositorios\RepositorioInterpretes.cs" />
