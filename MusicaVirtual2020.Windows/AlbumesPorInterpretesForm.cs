@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MusicaVirtual2020.Entidades.DTOs.Interprete;
-using MusicaVirtual2020.Servicios;
+using MusicaVirtual2020.Servicios.Servicios;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 using MusicaVirtual2020.Windows.Helpers;
 
 namespace MusicaVirtual2020.Windows
 {
     public partial class AlbumesPorInterpretesForm : Form
     {
-        public AlbumesPorInterpretesForm()
+        public AlbumesPorInterpretesForm(IServicioAlbumes servicio)
         {
             InitializeComponent();
+            this.servicio = servicio;
         }
 
         private void CerrarlButton_Click(object sender, EventArgs e)
@@ -26,10 +22,9 @@ namespace MusicaVirtual2020.Windows
         }
 
         private List<InterpreteAlbumesDto> lista;
-        private ServicioAlbumes servicio;
+        private IServicioAlbumes servicio;
         private void AlbumesPorInterpretesForm_Load(object sender, EventArgs e)
         {
-            servicio=new ServicioAlbumes();
             try
             {
                 lista = servicio.GetCantidadPorInterprete();

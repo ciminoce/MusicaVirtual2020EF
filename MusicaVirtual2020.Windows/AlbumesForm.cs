@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using MusicaVirtual2020.Entidades.DTOs.Album;
 using MusicaVirtual2020.Entidades.Entities;
 using MusicaVirtual2020.Entidades.Mapas;
-using MusicaVirtual2020.Servicios;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 using MusicaVirtual2020.Windows.Helpers;
 
 namespace MusicaVirtual2020.Windows
@@ -13,11 +13,11 @@ namespace MusicaVirtual2020.Windows
     {
         private static AlbumesForm _instancia = null;
 
-        public static AlbumesForm GetInstancia()
+        public static AlbumesForm GetInstancia(IServicioAlbumes servicio)
         {
             if (_instancia==null)
             {
-                _instancia=new AlbumesForm();
+                _instancia=new AlbumesForm(servicio);
                 _instancia.FormClosed += Form_close;
             }
 
@@ -29,16 +29,16 @@ namespace MusicaVirtual2020.Windows
             _instancia = null;
         }
 
-        private AlbumesForm()
+        private AlbumesForm(IServicioAlbumes servicio)
         {
             InitializeComponent();
+            this.servicio = servicio;
         }
 
-        private ServicioAlbumes servicio;
+        private IServicioAlbumes servicio;
         private List<AlbumListDto> lista;
         private void AlbumesForm_Load(object sender, System.EventArgs e)
         {
-            servicio=new ServicioAlbumes();
             try
             {
                 lista = servicio.GetAlbumes();
@@ -96,10 +96,10 @@ namespace MusicaVirtual2020.Windows
                 try
                 {
                     Album album = frm.GetAlbum();
-                    servicio.Agregar(album);
+                    servicio.Guardar(album);
                     DataGridViewRow r = ConstruirFila();
-                    //AlbumListDto albumListDto = Mapeador.ConvertirDesdeAlbum(album);
-                    //SetearFila(r,albumListDto);
+                    AlbumListDto albumListDto = Mapeador.CrearMapper().Map<Album, AlbumListDto>(album);
+                    SetearFila(r,albumListDto);
                     AgregarFila(r);
                     Helper.mensajeBox("Registro agregado con éxito", Tipo.Success);
                 }
@@ -109,6 +109,97 @@ namespace MusicaVirtual2020.Windows
 
                 }
             }
+        }
+
+        private void BorrarToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (DatosDataGridView.SelectedRows.Count > 0)
+            {
+                try
+                {
+                    var r = DatosDataGridView.SelectedRows[0];
+                    var albumDto = (AlbumListDto) r.Tag;
+                    DialogResult dr = Helper.mensajeBox($"¿Desea dar de baja el álbum {albumDto.Titulo}?");
+                    if (dr == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            servicio.Borrar(albumDto.AlbumId);
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                            throw;
+                        }
+
+                    }
+                    
+                }
+                catch (Exception )
+                {
+
+                }
+            }
+        }
+
+        private void detalleToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (DatosDataGridView.SelectedRows.Count==0)
+            {
+                return;
+            }
+
+            var r = DatosDataGridView.SelectedRows[0];
+            AlbumListDto albumDto = (AlbumListDto) r.Tag;
+            try
+            {
+                Album album = servicio.GetAlbumPorId(albumDto.AlbumId);
+                DetallesAlbumForm frm=new DetallesAlbumForm();
+                frm.SetAlbum(album);
+                frm.ShowDialog(this);
+            }
+            catch (Exception exception)
+            {
+                Helper.mensajeBox(exception.Message, Tipo.Error);
+            }
+        }
+
+        private void EditarToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (DatosDataGridView.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            var r = DatosDataGridView.SelectedRows[0];
+            AlbumListDto albumDto = (AlbumListDto)r.Tag;
+            try
+            {
+                Album album = servicio.GetAlbumPorId(albumDto.AlbumId);
+                AlbumesAEForm frm =new AlbumesAEForm();
+                frm.SetAlbum(album);
+                DialogResult dr=frm.ShowDialog(this);
+                if (dr==DialogResult.OK)
+                {
+                    try
+                    {
+                        servicio.Guardar(album);
+                        albumDto = Mapeador.CrearMapper().Map<Album, AlbumListDto>(album);
+                        SetearFila(r,albumDto);
+                        Helper.mensajeBox("Album Modificado", Tipo.Success);
+                    }
+                    catch (Exception exception)
+                    {
+                        Helper.mensajeBox(exception.Message, Tipo.Error);
+                    }
+                }
+
+            }
+            catch (Exception exception)
+            {
+                Helper.mensajeBox(exception.Message, Tipo.Error);
+            }
+
         }
     }
 }

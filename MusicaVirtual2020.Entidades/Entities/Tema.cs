@@ -1,11 +1,14 @@
-﻿namespace MusicaVirtual2020.Entidades.Entities
+﻿using System;
+
+namespace MusicaVirtual2020.Entidades.Entities
 {
     public class Tema
     {
         public int TemaId { get; set; }
-        public int PistaNro { get; set; }
+        public Int16 PistaNro { get; set; }
         public string Nombre { get; set; }
         public float Duracion { get; set; }
+        public int AlbumId { get; set; }
         public Album Album { get; set; }
 
         public override bool Equals(object obj)
@@ -19,7 +22,7 @@
         }
         public override int GetHashCode()
         {
-            return this.Nombre.GetHashCode();
+            return this.TemaId;
         }
     }
 }

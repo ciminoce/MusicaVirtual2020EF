@@ -1,30 +1,37 @@
 ﻿using System;
-using System.Data.SqlClient;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using MusicaVirtual2020.Datos.Repositorios.Facades;
 using MusicaVirtual2020.Entidades.Entities;
 
-namespace MusicaVirtual2020.Datos
+namespace MusicaVirtual2020.Datos.Repositorios
 {
-    public class RepositorioTemas
+    public class RepositorioTemas : IRepositorioTemas
     {
-        private readonly SqlConnection _cn;
+        private readonly MusicaDbContext _dbContext;
 
-        public RepositorioTemas(SqlConnection cn)
+        public RepositorioTemas(MusicaDbContext dbContext)
         {
-            _cn = cn;
+            _dbContext = dbContext;
         }
 
-        public void Agregar(Tema tema, SqlTransaction tran)
+
+        public void Guardar(Tema tema)
         {
             try
             {
-                string cadenaComando = "INSERT INTO Temas(PistaNumero, Nombre, Duracion, AlbumId) VALUES (@nro, @tema, @duracion, @album)";
-                SqlCommand comando = new SqlCommand(cadenaComando, _cn, tran);
-                comando.Parameters.AddWithValue("@nro", tema.PistaNro);
-                comando.Parameters.AddWithValue("@tema", tema.Nombre);
-                comando.Parameters.AddWithValue("@duracion", tema.Duracion);
-                comando.Parameters.AddWithValue("@album", tema.Album.AlbumId);
+                if (tema.TemaId==0)
+                {
+                    _dbContext.Temas.Add(tema);
+                }
+                else
+                {
+                    //TODO:Ver como hacer para los casos de edición
 
-                comando.ExecuteNonQuery();
+                    _dbContext.Temas.Attach(tema);
+                    _dbContext.Entry(tema).State = EntityState.Modified;
+                }
             }
             catch (Exception e)
             {
@@ -32,6 +39,31 @@ namespace MusicaVirtual2020.Datos
                 throw new Exception(e.Message);
             }
 
+        }
+
+        public List<Tema> GetTemasPorAlbum(int Id)
+        {
+            try
+            {
+                return _dbContext.Temas.Where(t => t.AlbumId == Id).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void Borrar(Tema tema)
+        {
+            try
+            {
+                _dbContext.Temas.Attach(tema);
+                _dbContext.Entry(tema).State = EntityState.Deleted;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }

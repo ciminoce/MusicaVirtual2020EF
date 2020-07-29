@@ -42,5 +42,20 @@ namespace MusicaVirtual2020.Windows
         {
             return true;
         }
+
+        public void SetTema(Tema tema)
+        {
+            this.tema = tema;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (tema!=null)
+            {
+                TituloTextBox.Text = tema.Nombre;
+                duracionTextBox.Text = tema.Duracion.ToString();
+            }
+        }
     }
 }

@@ -11,6 +11,15 @@ namespace MusicaVirtual2020.Windows
             InitializeComponent();
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (estilo!=null)
+            {
+                EstiloTextBox.Text = estilo.Nombre;
+            }
+        }
+
         private void CancelButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -47,6 +56,11 @@ namespace MusicaVirtual2020.Windows
         public Estilo GetEstilo()
         {
             return estilo;
+        }
+
+        public void SetEstilo(Estilo estilo)
+        {
+            this.estilo = estilo;
         }
     }
 }

@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,8 +47,10 @@
     <Compile Include="Servicios\Facades\IServicioSoporte.cs" />
     <Compile Include="Servicios\Facades\IServicioInterprete.cs" />
     <Compile Include="Servicios\Facades\IServicioNegocio.cs" />
+    <Compile Include="Servicios\Facades\IServicioAlbumes.cs" />
+    <Compile Include="Servicios\IServicioEstilo.cs" />
     <Compile Include="Servicios\ServicioAlbumes.cs" />
-    <Compile Include="Servicios\ServicioEstilo.cs" />
+    <Compile Include="Servicios\Facades\ServicioEstilo.cs" />
     <Compile Include="Servicios\ServicioInterprete.cs" />
     <Compile Include="Servicios\ServicioNegocio.cs" />
     <Compile Include="Servicios\ServicioPais.cs" />

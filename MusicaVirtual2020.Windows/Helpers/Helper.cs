@@ -63,7 +63,7 @@ namespace MusicaVirtual2020.Windows.Helpers
         }
         public static void CargarDatosComboEstilos(ref ComboBox combo)
         {
-            ServicioEstilo servicio = new ServicioEstilo();
+            IServicioEstilo servicio = DI.Create<IServicioEstilo>();
             var lista = servicio.GetLista();
             Estilo defaultEstilo = new Estilo() { EstiloId = 0, Nombre = "<Seleccione Estilo>" };
             lista.Insert(0, defaultEstilo);

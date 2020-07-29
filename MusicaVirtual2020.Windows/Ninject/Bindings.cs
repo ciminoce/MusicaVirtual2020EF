@@ -23,6 +23,20 @@ namespace MusicaVirtual2020.Windows.Ninject
             Bind<IRepositorioInterpretes>().To<RepositorioInterpretes>();
             Bind<IServicioInterprete>().To<ServicioInterprete>();
 
+            Bind<IRepositorioNegocios>().To<RepositorioNegocios>();
+            Bind<IServicioNegocio>().To<ServicioNegocio>();
+
+            Bind<IRepositorioEstilos>().To<RepositorioEstilos>();
+            Bind<IServicioEstilo>().To<ServicioEstilo>();
+
+            Bind<IRepositorioAlbumes>().To<RepositorioAlbumes>();
+            Bind<IServicioAlbumes>().To<ServicioAlbumes>();
+
+            Bind<IRepositorioTemas>().To<RepositorioTemas>();
+            
+
+
+
         }
     }
 }

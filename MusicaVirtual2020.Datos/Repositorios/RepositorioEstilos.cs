@@ -1,33 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using MusicaVirtual2020.Entidades;
-using MusicaVirtual2020.Entidades.DTOs.Estilo;
+using System.Data.Entity;
+using System.Linq;
+using MusicaVirtual2020.Datos.Repositorios.Facades;
 using MusicaVirtual2020.Entidades.Entities;
 
-namespace MusicaVirtual2020.Datos
+namespace MusicaVirtual2020.Datos.Repositorios
 {
-    public class RepositorioEstilos
+    public class RepositorioEstilos : IRepositorioEstilos
     {
-        private readonly SqlConnection _cn;
+        private readonly MusicaDbContext _dbContext;
 
-        public RepositorioEstilos(SqlConnection cn)
+        public RepositorioEstilos(MusicaDbContext dbContext)
         {
-            this._cn = cn;
+            _dbContext = dbContext;
         }
 
-        public void Agregar(Estilo estilo)
+        public bool EstaRelacionado(Estilo estilo)
         {
             try
             {
-                var cadenaComando = "INSERT INTO Estilos VALUES (@estilo)";
-                var comando=new SqlCommand(cadenaComando,_cn);
-                comando.Parameters.AddWithValue("@estilo", estilo.Nombre);
-                comando.ExecuteNonQuery();
-                cadenaComando = "SELECT @@Identity";
-                comando=new SqlCommand(cadenaComando,_cn);
-                int id =(int)(decimal) comando.ExecuteScalar();
-                estilo.EstiloId = id;
+                return false;
+            }
+            catch (Exception e)
+            {
+                
+                throw new Exception(e.Message);
+            }
+        }
+        public bool Existe(Estilo estilo)
+        {
+            try
+            {
+                if (estilo.EstiloId==0)
+                {
+                    return _dbContext.Estilos.Any(e => e.Nombre == estilo.Nombre);
+                }
+
+                return _dbContext.Estilos
+                    .Any(e => e.Nombre == estilo.Nombre && e.EstiloId != estilo.EstiloId);
+            }
+            catch (Exception e)
+            {
+                
+                throw new Exception(e.Message);
+            }
+        }
+        public void Guardar(Estilo estilo)
+        {
+            try
+            {
+                if (estilo.EstiloId==0)
+                {
+                    _dbContext.Estilos.Add(estilo);
+
+                }
+                else
+                {
+                    _dbContext.Estilos.Attach(estilo);
+                    _dbContext.Entry(estilo).State = EntityState.Modified;
+                }
             }
             catch (Exception e)
             {
@@ -39,17 +71,7 @@ namespace MusicaVirtual2020.Datos
         {
             try
             {
-                List<Estilo> lista=new List<Estilo>();
-                string cadenaComando = "SELECT EstiloId, Nombre FROM Estilos";
-                var comando=new SqlCommand(cadenaComando, _cn);
-                var reader = comando.ExecuteReader();
-                while (reader.Read())
-                {
-                    Estilo estilo = ConstruirEstilo(reader); 
-                    lista.Add(estilo);
-                }
-                reader.Close();
-                return lista;
+                return _dbContext.Estilos.ToList();
             }
             catch (Exception e)
             {
@@ -58,16 +80,23 @@ namespace MusicaVirtual2020.Datos
             }
         }
 
-        private Estilo ConstruirEstilo(SqlDataReader reader)
+        public void Borrar(Estilo estilo)
         {
-            return new Estilo
+            try
             {
-                EstiloId = reader.GetInt32(0),
-                Nombre = reader.GetString(1)
-            };
+                _dbContext.Estilos.Attach(estilo);
+                _dbContext.Entry(estilo).State = EntityState.Deleted;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
-
+        public Estilo GetEstiloPorId(int id)
+        {
+            return _dbContext.Estilos.SingleOrDefault(e => e.EstiloId == id);
+        }
       
     }
 }

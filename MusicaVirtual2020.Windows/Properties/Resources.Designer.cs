@@ -153,6 +153,16 @@ namespace MusicaVirtual2020.Windows.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap details_40px {
+            get {
+                object obj = ResourceManager.GetObject("details_40px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Edit {
             get {
                 object obj = ResourceManager.GetObject("Edit", resourceCulture);
@@ -166,6 +176,16 @@ namespace MusicaVirtual2020.Windows.Properties {
         internal static System.Drawing.Bitmap edit_16px {
             get {
                 object obj = ResourceManager.GetObject("edit_16px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap edit_24px {
+            get {
+                object obj = ResourceManager.GetObject("edit_24px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -366,6 +386,16 @@ namespace MusicaVirtual2020.Windows.Properties {
         internal static System.Drawing.Bitmap Print {
             get {
                 object obj = ResourceManager.GetObject("Print", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap remove_24px {
+            get {
+                object obj = ResourceManager.GetObject("remove_24px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

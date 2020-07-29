@@ -1,117 +1,97 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Transactions;
 using MusicaVirtual2020.Datos;
-using MusicaVirtual2020.Datos.Repositorios;
+using MusicaVirtual2020.Datos.Repositorios.Facades;
 using MusicaVirtual2020.Entidades.DTOs.Album;
 using MusicaVirtual2020.Entidades.DTOs.Interprete;
 using MusicaVirtual2020.Entidades.DTOs.Negocio;
 using MusicaVirtual2020.Entidades.Entities;
-using MusicaVirtual2020.Entidades.Mapas;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 
-namespace MusicaVirtual2020.Servicios
+namespace MusicaVirtual2020.Servicios.Servicios
 {
-    public class ServicioAlbumes
+    public class ServicioAlbumes : IServicioAlbumes
     {
-        private ConexionBd _conexion;
-        private RepositorioAlbumes _repositorio;
-        private RepositorioInterpretes _repoInterpretes;
-        private RepositorioTemas _repositorioTemas;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositorioAlbumes _repositorioAlbumes;
+        private readonly IRepositorioTemas _repositorioTemas;
+        private readonly MusicaDbContext _dbContext;
 
-        public ServicioAlbumes()
+        public ServicioAlbumes(IUnitOfWork unitOfWork, IRepositorioAlbumes repositorioAlbumes, IRepositorioTemas repositorioTemas, MusicaDbContext dbContext)
         {
-            
+            _unitOfWork = unitOfWork;
+            _repositorioAlbumes = repositorioAlbumes;
+            _repositorioTemas = repositorioTemas;
+            _dbContext = dbContext;
         }
 
         public List<AlbumListDto> GetAlbumes()
         {
-            try
-            {
-                _conexion=new ConexionBd();
-                //_repoInterpretes=new RepositorioInterpretes(_conexion.AbrirConexion());
-                _repositorio=new RepositorioAlbumes(_conexion.AbrirConexion());
-                var lista= _repositorio.GetLista();
-                _conexion.CerrarConexion();
-                return lista;
-            }
-            catch (Exception e)
-            {
-                
-                throw new Exception(e.Message);
-            }
+            return _repositorioAlbumes.GetLista();
         }
 
-        public void Agregar(Album album)
+        public void Guardar(Album album)
         {
-            SqlTransaction tran = null;
-            try
+            using (var scope = new TransactionScope(TransactionScopeOption.Required))
             {
-                _conexion = new ConexionBd();
-                SqlConnection cn = _conexion.AbrirConexion();
-                _repositorio = new RepositorioAlbumes(cn);
-                _repositorioTemas=new RepositorioTemas(cn);
-
-                using (tran=cn.BeginTransaction())
+                try
                 {
-                    //Album album = Mapeador.ConvertirAAlbum(albumEditDto);
-                    _repositorio.Agregar(album, tran);
-                    //albumEditDto.AlbumId = album.AlbumId;
-                    if (album.Temas.Count>0)
+                    _repositorioAlbumes.Guardar(album);
+                    _unitOfWork.Save();
+                    
+                    if (album.Temas.Count > 0)
                     {
                         album.Temas.ForEach(t =>
                         {
-                            t.Album = album;
-                            _repositorioTemas.Agregar(t,tran);
+                            t.AlbumId = album.AlbumId;
+                            _repositorioTemas.Guardar(t);
+                            _unitOfWork.Save();
                         });
                     }
 
-                    tran.Commit();//método que persiste la informacion en la BD.
-                    
+                    scope.Complete();
                 }
-                _conexion.CerrarConexion();
-                
-            }
-            catch (Exception e)
-            {
-                tran.Rollback();//tira para atras todo lo grabado
-                throw new Exception(e.Message);
+                catch (Exception ex)
+                {
+
+                    throw new Exception(ex.Message);
+                }
             }
 
         }
 
         public List<InterpreteAlbumesDto> GetCantidadPorInterprete()
         {
-            try
-            {
-                _conexion = new ConexionBd();
-                _repositorio = new RepositorioAlbumes(_conexion.AbrirConexion());
-                var lista = _repositorio.GetCantidadPorInterprete();
-                _conexion.CerrarConexion();
-                return lista;
-            }
-            catch (Exception e)
-            {
-
-                throw new Exception(e.Message);
-            }
-
+            return _repositorioAlbumes.GetCantidadPorInterprete();
         }
 
         public List<NegocioAlbumesDto> GetCantidadPorNegocio()
         {
-            try
-            {
-                _conexion=new ConexionBd();
-                _repositorio=new RepositorioAlbumes(_conexion.AbrirConexion());
-                var lista = _repositorio.GetCantidadPorNegocio();
-                _conexion.CerrarConexion();
-                return lista;
+            return _repositorioAlbumes.GetCantidadPorNegocio();
+        }
 
-            }
-            catch (Exception e)
+        public Album GetAlbumPorId(int id)
+        {
+            return _repositorioAlbumes.GetAlbumPorId(id);
+        }
+
+        public void Borrar(int id)
+        {
+            using (var scope = new TransactionScope(TransactionScopeOption.Required))
             {
-                Console.WriteLine(e);
-                throw;
+                try
+                {
+                    var temas = _repositorioTemas.GetTemasPorAlbum(id);
+                    temas.ForEach(t => _repositorioTemas.Borrar(t));
+                    _repositorioAlbumes.Borrar(id);
+                    _unitOfWork.Save();
+                    scope.Complete();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
             }
         }
     }

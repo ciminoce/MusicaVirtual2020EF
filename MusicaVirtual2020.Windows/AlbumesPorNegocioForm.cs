@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using MusicaVirtual2020.Entidades.DTOs.Negocio;
-using MusicaVirtual2020.Servicios;
+using MusicaVirtual2020.Servicios.Servicios;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 using MusicaVirtual2020.Windows.Helpers;
 
 namespace MusicaVirtual2020.Windows
 {
     public partial class AlbumesPorNegocioForm : Form
     {
-        public AlbumesPorNegocioForm()
+        public AlbumesPorNegocioForm(IServicioAlbumes servicio)
         {
             InitializeComponent();
+            this.servicio = servicio;
         }
 
         private List<NegocioAlbumesDto> lista;
-        private ServicioAlbumes servicio;
+        private IServicioAlbumes servicio;
         private void CerrarlButton_Click(object sender, EventArgs e)
         {
             Close();
@@ -23,7 +25,7 @@ namespace MusicaVirtual2020.Windows
 
         private void AlbumesPorNegocioForm_Load(object sender, EventArgs e)
         {
-            servicio=new ServicioAlbumes();
+            
             try
             {
                 lista = servicio.GetCantidadPorNegocio();

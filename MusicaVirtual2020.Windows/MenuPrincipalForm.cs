@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using MusicaVirtual2020.Servicios.Servicios;
 using MusicaVirtual2020.Servicios.Servicios.Facades;
 using MusicaVirtual2020.Windows.Ninject;
 
@@ -41,7 +42,7 @@ namespace MusicaVirtual2020.Windows
 
         private void ManejarEstilos()
         {
-            EstilosForm frm = EstilosForm.GetInstancia();
+            EstilosForm frm = EstilosForm.GetInstancia(DI.Create<IServicioEstilo>());
 
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
@@ -109,7 +110,7 @@ namespace MusicaVirtual2020.Windows
 
         private void ManejarAlbumes()
         {
-            AlbumesForm frm = AlbumesForm.GetInstancia();
+            AlbumesForm frm = AlbumesForm.GetInstancia(DI.Create<IServicioAlbumes>());
 
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
@@ -148,7 +149,7 @@ namespace MusicaVirtual2020.Windows
 
         private void cantidadXIntérpreteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AlbumesPorInterpretesForm frm=new AlbumesPorInterpretesForm();
+            AlbumesPorInterpretesForm frm=new AlbumesPorInterpretesForm(DI.Create<IServicioAlbumes>());
             frm.Text = "Cantidad de Álbumes por Intérprete";
             frm.ShowDialog(this);
 
@@ -156,7 +157,7 @@ namespace MusicaVirtual2020.Windows
 
         private void cantidadXNegocioToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AlbumesPorNegocioForm frm = new AlbumesPorNegocioForm();
+            AlbumesPorNegocioForm frm = new AlbumesPorNegocioForm(DI.Create<IServicioAlbumes>());
             frm.Text = "Cantidad de Álbumes por Negocio";
             frm.ShowDialog(this);
 

@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using MusicaVirtual2020.Datos;
+using MusicaVirtual2020.Datos.Repositorios;
 using MusicaVirtual2020.Entidades.Entities;
 
-namespace MusicaVirtual2020.Servicios
+namespace MusicaVirtual2020.Servicios.Servicios
 {
     public class ServicioEstilo
     {
-        private ConexionBd conexion;
-        private RepositorioEstilos repositorio;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly repositorio;
 
         public ServicioEstilo()
         {
         }
 
-        public void Agregar(Estilo estilo)
+        public void Guardar(Estilo estilo)
         {
             try
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using MusicaVirtual2020.Entidades.Entities;
 using MusicaVirtual2020.Windows.Helpers;
 
@@ -22,6 +23,26 @@ namespace MusicaVirtual2020.Windows
             Helper.CargarDatosComboInterpretes(ref interpretesComboBox);
             Helper.CargarDatosComboNegocios(ref negocioComboBox);
             Helper.CargarDatosComboSoportes(ref soporteComboBox);
+            if (album!=null)
+            {
+                TituloTextBox.Text = album.Titulo;
+                interpretesComboBox.SelectedValue = album.Interprete.InterpreteId;
+                soporteComboBox.SelectedValue = album.Soporte.SoporteId;
+                estiloComboBox.SelectedValue = album.Estilo.EstiloId;
+                negocioComboBox.SelectedValue = album.Negocio.NegocioId;
+                pistasNumericUpDown.Value = album.Pistas;
+                costoTextBox.Text = album.Costo.ToString();
+                anioCompraTextBox.Text = album.AnioCompra.ToString();
+                if (album.Temas.Count>0)
+                {
+                    album.Temas.ForEach(t =>
+                    {
+                        DataGridViewRow r = ConstruirFila();
+                        SetearFila(r,t);
+                        AgregarFila(r);
+                    });
+                }
+            }
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -39,11 +60,16 @@ namespace MusicaVirtual2020.Windows
                 }
 
                 album.Titulo = TituloTextBox.Text;
-                album.Interprete =(Interprete) interpretesComboBox.SelectedItem;
-                album.Estilo=(Estilo) estiloComboBox.SelectedItem;
-                album.Soporte = (Soporte) soporteComboBox.SelectedItem;
-                album.Negocio = (Negocio) negocioComboBox.SelectedItem;
-                album.Pistas = (Int16) pistasNumericUpDown.Value;
+                //album.Interprete =(Interprete) interpretesComboBox.SelectedItem;
+                //album.Estilo=(Estilo) estiloComboBox.SelectedItem;
+                //album.Soporte = (Soporte) soporteComboBox.SelectedItem;
+                //album.Negocio = (Negocio) negocioComboBox.SelectedItem;
+                album.InterpreteId =(int) interpretesComboBox.SelectedValue;
+                album.EstiloId =(int) estiloComboBox.SelectedValue;
+                album.SoporteId = (int)soporteComboBox.SelectedValue;
+                album.NegocioId = (int)negocioComboBox.SelectedValue;
+
+                album.Pistas = (short) pistasNumericUpDown.Value;
                 album.Costo = decimal.Parse(costoTextBox.Text);
                 album.AnioCompra = int.Parse(anioCompraTextBox.Text);
 
@@ -120,7 +146,7 @@ namespace MusicaVirtual2020.Windows
 
                 if (!temas.Contains(tema))
                 {
-                    tema.PistaNro = temas.Count + 1;
+                    tema.PistaNro =(short)(temas.Count + 1);
                     temas.Add(tema);
                     DataGridViewRow r = ConstruirFila();
                     SetearFila(r, tema);
@@ -171,6 +197,29 @@ namespace MusicaVirtual2020.Windows
             else
             {
                 agregarTemaButton.Enabled = false;
+            }
+        }
+
+        public void SetAlbum(Album album)
+        {
+            this.album = album;
+        }
+
+        private void temasDatosGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex==3)
+            {
+                var rTema = temasDatosGridView.Rows[e.RowIndex];
+                var tema = (Tema) rTema.Tag;
+                TemasAEForm frm=new TemasAEForm();
+                frm.SetTema(tema);
+                DialogResult dr = frm.ShowDialog(this);
+                if (dr==DialogResult.OK)
+                {
+                    tema = frm.GetTema();
+                    SetearFila(rTema,tema);
+                    Helper.mensajeBox("Tema modificado", Tipo.Success);
+                }
             }
         }
     }
