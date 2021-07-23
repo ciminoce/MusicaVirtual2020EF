@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using MusicaVirtual2020.Entidades.Entities;
+using MusicaVirtual2020.Entidades.Entities.Enums;
+using MusicaVirtual2020.Servicios.Servicios;
+using MusicaVirtual2020.Servicios.Servicios.Facades;
 using MusicaVirtual2020.Windows.Helpers;
 
 namespace MusicaVirtual2020.Windows
 {
     public partial class AlbumesAEForm : Form
     {
-        public AlbumesAEForm()
+        public AlbumesAEForm(IServicioAlbumes servicioAlbumes)
         {
             InitializeComponent();
+            this.servicioAlbumes = servicioAlbumes;
         }
 
+        private IServicioAlbumes servicioAlbumes;
         private Album album;
         private List<Tema> temas=new List<Tema>();
         protected override void OnLoad(EventArgs e)
@@ -33,15 +38,36 @@ namespace MusicaVirtual2020.Windows
                 pistasNumericUpDown.Value = album.Pistas;
                 costoTextBox.Text = album.Costo.ToString();
                 anioCompraTextBox.Text = album.AnioCompra.ToString();
-                if (album.Temas.Count>0)
+                MostrarTemasEnGrilla();
+            }
+        }
+
+        private void MostrarTemasEnGrilla()
+        {
+            temasDatosGridView.Rows.Clear();
+            temas.Clear();//limpio la lista local de temas
+            if (album.Temas.Count > 0)
+            {
+                foreach (var tema in album.Temas)
                 {
-                    album.Temas.ForEach(t =>
-                    {
-                        DataGridViewRow r = ConstruirFila();
-                        SetearFila(r,t);
-                        AgregarFila(r);
-                    });
+                    DataGridViewRow r = ConstruirFila();
+                    SetearFila(r, tema);
+                    AgregarFila(r);
+
+                    temas.Add(tema);
                 }
+                //album.Temas.ForEach(t =>
+                //{
+                //    if (t.Estado!=Estado.Borrado)
+                //    {
+                //        DataGridViewRow r = ConstruirFila();
+                //        SetearFila(r, t);
+                //        AgregarFila(r);
+
+                //    }
+                //    //agregar tema a la lista
+                //    temas.Add(t);
+                //});
             }
         }
 
@@ -128,6 +154,12 @@ namespace MusicaVirtual2020.Windows
                 valido = false;
                 errorProvider1.SetError(costoTextBox,"Costo fuera del rango permitido");
             }
+
+            if (pistasNumericUpDown.Value<temas.Count)
+            {
+                valido = false;
+                errorProvider1.SetError(pistasNumericUpDown,"Pistas inferior a la cantidad de temas");
+            }
             return valido;
         }
 
@@ -146,7 +178,11 @@ namespace MusicaVirtual2020.Windows
 
                 if (!temas.Contains(tema))
                 {
-                    tema.PistaNro =(short)(temas.Count + 1);
+                    /*Si queremos que la pista la incremente
+                     de forma automática*/
+
+                    //tema.PistaNro =(short)(temas.Count + 1);
+                    //tema.Estado = Estado.Agregado;
                     temas.Add(tema);
                     DataGridViewRow r = ConstruirFila();
                     SetearFila(r, tema);
@@ -176,7 +212,7 @@ namespace MusicaVirtual2020.Windows
         {
             r.Cells[cmnNro.Index].Value = tema.PistaNro;
             r.Cells[cmnTema.Index].Value = tema.Nombre;
-            r.Cells[cmnDuracion.Index].Value = tema.Duracion;
+            r.Cells[cmnDuracion.Index].Value = tema.Duracion.ToString();
 
             r.Tag = tema;
         }
@@ -216,11 +252,91 @@ namespace MusicaVirtual2020.Windows
                 DialogResult dr = frm.ShowDialog(this);
                 if (dr==DialogResult.OK)
                 {
-                    tema = frm.GetTema();
-                    SetearFila(rTema,tema);
-                    Helper.mensajeBox("Tema modificado", Tipo.Success);
+                    try
+                    {
+                        tema = frm.GetTema();
+                        if (tema.AlbumId!=0)
+                        {
+                            servicioAlbumes.GuardarTema(tema);
+                            //tema.Estado = Estado.Modificado;
+
+                        }
+                        SetearFila(rTema, tema);
+                        Helper.mensajeBox("Tema modificado..." + Environment.NewLine +
+                            "Deberá presionar OK al finalizar para confirmar", Tipo.Success);
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }                }
+            }else if (e.ColumnIndex==4)
+            {
+                var rTema = temasDatosGridView.Rows[e.RowIndex];
+                var tema = (Tema)rTema.Tag;
+                DialogResult dr = Helper.mensajeBox($"¿Desea borrar el tema {tema.Nombre}? {Environment.NewLine}" +
+                                                    $"El tema se borrará de forma definitiva...");
+                if (dr==DialogResult.Yes)
+                {
+                    try
+                    {
+                        if (tema.AlbumId != 0)
+                        {
+                            /*Si el tema ya existe en la BD
+                             hay que borrarlo y luego renumerar los temas*/
+                            servicioAlbumes.BorrarTemaPorId(tema);
+                            temas.Clear();//limpio la lista de temas
+                            //Recargo la lista
+                            temas = servicioAlbumes.GetTemasPorAlbum(album.AlbumId);
+                            MostrarTemasEnGrilla();//Muestro la lista
+                        }
+                        else
+                        {
+                            temasDatosGridView.Rows.Remove(rTema);
+                            RenumerarTemas();
+                            MostrarTemasEnGrilla();
+                        }
+
+                        Helper.mensajeBox("Registro borrado", Tipo.Success);
+                    }
+                    catch (Exception exception)
+                    {
+                        Helper.mensajeBox(exception.Message, Tipo.Error);
+
+                    }
+                    //tema.Estado = Estado.Borrado;
+                    //RenumerarTemas();
+                    //MostrarTemasEnGrilla();
+                    //Helper.mensajeBox("Tema borrado..." + Environment.NewLine +
+                    //                  "Deberá presionar OK al finalizar para confirmar", Tipo.Success);
+
                 }
             }
+        }
+
+        private void RenumerarTemas()
+        {
+            if (temas.Count==0)
+            {
+                return;
+            }
+
+            short contadorTemas = 0;
+            //foreach (var tema in temas)
+            //{
+            //    contadorTemas++;
+            //    tema.PistaNro = contadorTemas;
+
+
+            //}
+            temas.ForEach(t =>
+            {
+                
+                contadorTemas++;
+                t.PistaNro = contadorTemas;
+
+              
+            });
         }
     }
 }

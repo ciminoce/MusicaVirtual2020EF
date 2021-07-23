@@ -13,6 +13,9 @@ namespace MusicaVirtual2020.Servicios.Servicios.Facades
         List<InterpreteAlbumesDto> GetCantidadPorInterprete();
         List<NegocioAlbumesDto> GetCantidadPorNegocio();
         Album GetAlbumPorId(int albumDtoAlbumId);
-        void Borrar(int albumDtoAlbumId);
+        void Borrar(int albumId);
+        void BorrarTemaPorId(Tema id);
+        List<Tema> GetTemasPorAlbum(int albumId);
+        void GuardarTema(Tema tema);
     }
 }

@@ -89,7 +89,7 @@ namespace MusicaVirtual2020.Windows
 
         private void NuevoToolStripButton_Click(object sender, EventArgs e)
         {
-            AlbumesAEForm frm=new AlbumesAEForm();
+            AlbumesAEForm frm=new AlbumesAEForm(servicio);
             DialogResult dr = frm.ShowDialog(this);
             if (dr == DialogResult.OK) 
             {
@@ -115,28 +115,21 @@ namespace MusicaVirtual2020.Windows
         {
             if (DatosDataGridView.SelectedRows.Count > 0)
             {
-                try
+                var r = DatosDataGridView.SelectedRows[0];
+                var albumDto = (AlbumListDto) r.Tag;
+                DialogResult dr = Helper.mensajeBox($"¿Desea dar de baja el álbum {albumDto.Titulo}?");
+                if (dr == DialogResult.Yes)
                 {
-                    var r = DatosDataGridView.SelectedRows[0];
-                    var albumDto = (AlbumListDto) r.Tag;
-                    DialogResult dr = Helper.mensajeBox($"¿Desea dar de baja el álbum {albumDto.Titulo}?");
-                    if (dr == DialogResult.Yes)
+                    try
                     {
-                        try
-                        {
-                            servicio.Borrar(albumDto.AlbumId);
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                            throw;
-                        }
-
+                        servicio.Borrar(albumDto.AlbumId);
+                        DatosDataGridView.Rows.Remove(r);
+                        Helper.mensajeBox("Registro Borrado", Tipo.Success);
                     }
-                    
-                }
-                catch (Exception )
-                {
+                    catch (Exception exception)
+                    {
+                        Helper.mensajeBox(exception.Message, Tipo.Error);
+                    }
 
                 }
             }
@@ -176,7 +169,7 @@ namespace MusicaVirtual2020.Windows
             try
             {
                 Album album = servicio.GetAlbumPorId(albumDto.AlbumId);
-                AlbumesAEForm frm =new AlbumesAEForm();
+                AlbumesAEForm frm =new AlbumesAEForm(servicio);
                 frm.SetAlbum(album);
                 DialogResult dr=frm.ShowDialog(this);
                 if (dr==DialogResult.OK)

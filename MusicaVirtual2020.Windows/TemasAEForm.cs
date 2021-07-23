@@ -27,9 +27,11 @@ namespace MusicaVirtual2020.Windows
                     tema=new Tema();
                 }
 
+                tema.PistaNro = (short) pistaNumericUpDown.Value;
                 tema.Nombre = TituloTextBox.Text;
-                tema.Duracion = float.Parse(duracionTextBox.Text);
-
+                tema.Tiempo = new TimeSpan(DuracionDateTimePicker.Value.Hour, 
+                    DuracionDateTimePicker.Value.Minute,
+                    DuracionDateTimePicker.Value.Second).Ticks;
                 DialogResult = DialogResult.OK;
             }
         }
@@ -54,7 +56,11 @@ namespace MusicaVirtual2020.Windows
             if (tema!=null)
             {
                 TituloTextBox.Text = tema.Nombre;
-                duracionTextBox.Text = tema.Duracion.ToString();
+                DuracionDateTimePicker.Value = Convert.ToDateTime(tema.Duracion.ToString());
+            }
+            else
+            {
+                DuracionDateTimePicker.Value=DateTime.Parse("00:00:00");
             }
         }
     }

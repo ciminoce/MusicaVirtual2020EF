@@ -39,7 +39,7 @@ namespace MusicaVirtual2020.Servicios.Servicios
                 {
                     _repositorioAlbumes.Guardar(album);
                     _unitOfWork.Save();
-                    
+
                     if (album.Temas.Count > 0)
                     {
                         album.Temas.ForEach(t =>
@@ -47,6 +47,7 @@ namespace MusicaVirtual2020.Servicios.Servicios
                             t.AlbumId = album.AlbumId;
                             _repositorioTemas.Guardar(t);
                             _unitOfWork.Save();
+
                         });
                     }
 
@@ -93,6 +94,37 @@ namespace MusicaVirtual2020.Servicios.Servicios
                     throw new Exception(ex.Message);
                 }
             }
+        }
+
+        public void BorrarTemaPorId(Tema tema)
+        {
+            using (var scope = new TransactionScope(TransactionScopeOption.Required))
+            {
+                try
+                {
+                    _repositorioTemas.Borrar(tema);
+                    _unitOfWork.Save();
+                    _repositorioTemas.RenumerarTemas(tema.AlbumId);
+                    _unitOfWork.Save();
+                    scope.Complete();
+                }
+                catch (Exception e)
+                {
+
+                    throw new Exception(e.Message);
+                }
+            }
+        }
+
+        public List<Tema> GetTemasPorAlbum(int albumId)
+        {
+            return _repositorioTemas.GetTemasPorAlbum(albumId);
+        }
+
+        public void GuardarTema(Tema tema)
+        {
+            _repositorioTemas.Guardar(tema);
+            _unitOfWork.Save();
         }
     }
 }

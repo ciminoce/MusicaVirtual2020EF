@@ -36,7 +36,7 @@ namespace MusicaVirtual2020.Windows
         {
             r.Cells[cmnNro.Index].Value = tema.PistaNro;
             r.Cells[cmnTema.Index].Value = tema.Nombre;
-            r.Cells[cmnDuracion.Index].Value = tema.Duracion;
+            r.Cells[cmnDuracion.Index].Value = tema.Duracion.ToString();
         }
 
         private void AgregarFila(DataGridViewRow r)

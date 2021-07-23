@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using MusicaVirtual2020.Datos.Repositorios.Facades;
 using MusicaVirtual2020.Entidades.Entities;
+using MusicaVirtual2020.Entidades.Entities.Enums;
 
 namespace MusicaVirtual2020.Datos.Repositorios
 {
@@ -45,11 +46,40 @@ namespace MusicaVirtual2020.Datos.Repositorios
         {
             try
             {
-                return _dbContext.Temas.Where(t => t.AlbumId == Id).ToList();
+                return _dbContext.Temas.Where(t => t.AlbumId == Id)
+                    .OrderBy(t => t.PistaNro)
+                    .ToList();
+                //var lista= _dbContext.Temas.Where(t => t.AlbumId == Id)
+                //    .OrderBy(t => t.PistaNro)
+                //    .ToList();
+                //lista.ForEach(t=>t.Estado=Estado.SinCambios);
+                //return lista;
+
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public void RenumerarTemas(int albumId)
+        {
+            try
+            {
+                var listaTemas = _dbContext.Temas.Where(t => t.AlbumId == albumId).ToList();
+                short contadorTemas = 0;
+                listaTemas.ForEach(t =>
+                {
+                    contadorTemas++;
+                    t.PistaNro = contadorTemas;
+                    _dbContext.Temas.Attach(t);
+                    _dbContext.Entry(t).State = EntityState.Modified;
+                });
+            }
+            catch (Exception e)
+            {
+                
+                throw new Exception(e.Message);
             }
         }
 
@@ -59,6 +89,18 @@ namespace MusicaVirtual2020.Datos.Repositorios
             {
                 _dbContext.Temas.Attach(tema);
                 _dbContext.Entry(tema).State = EntityState.Deleted;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public List<Tema> GetAll()
+        {
+            try
+            {
+                return _dbContext.Temas.ToList();
             }
             catch (Exception e)
             {

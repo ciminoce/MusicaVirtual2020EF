@@ -8,5 +8,6 @@ namespace MusicaVirtual2020.Datos.Repositorios.Facades
         void Guardar(Tema tema);
         void Borrar(Tema tema);
         List<Tema> GetTemasPorAlbum(int id);
+        void RenumerarTemas(int albumId);
     }
 }

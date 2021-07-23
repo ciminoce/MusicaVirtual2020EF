@@ -120,13 +120,13 @@ namespace MusicaVirtual2020.Datos.Repositorios
 
         }
 
-        public void Borrar(int Id)
+        public void Borrar(int id)
         {
             try
             {
 
                 var albumInDb = _dbContext.Albumes
-                    .SingleOrDefault(a => a.AlbumId == Id);
+                    .SingleOrDefault(a => a.AlbumId == id);
                 if (albumInDb != null)
                 {
                     _dbContext.Albumes.Attach(albumInDb);

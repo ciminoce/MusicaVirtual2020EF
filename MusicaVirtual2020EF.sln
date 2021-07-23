@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicaVirtual2020EF.Servici
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicaVirtual2020EF.Reportes", "MusicaVirtual2020.Reportes\MusicaVirtual2020EF.Reportes.csproj", "{12D6D30C-ED0C-48B4-B0C6-F5A410DCA948}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertirATicks", "ConvertirATicks\ConvertirATicks.csproj", "{1E097B99-F688-49FB-B43F-472F5CDAE4E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{12D6D30C-ED0C-48B4-B0C6-F5A410DCA948}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12D6D30C-ED0C-48B4-B0C6-F5A410DCA948}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12D6D30C-ED0C-48B4-B0C6-F5A410DCA948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E097B99-F688-49FB-B43F-472F5CDAE4E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E097B99-F688-49FB-B43F-472F5CDAE4E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E097B99-F688-49FB-B43F-472F5CDAE4E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E097B99-F688-49FB-B43F-472F5CDAE4E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
